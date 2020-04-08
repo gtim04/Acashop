@@ -31,7 +31,7 @@
 
 		@can('manage role')
 		<li class="nav-item">
-			<a class="{{ Request::path() === 'admin/showresolved' ? 'nav-link active' : 'nav-link'}}" href="{{ route('admin.home') }}">Manage Roles</a>
+			<a class="{{ Request::path() === 'manageroles' ? 'nav-link active' : 'nav-link'}}" href="{{ route('admin.manroles') }}">Manage Roles</a>
 		</li>
 		@endcan
 	</ul>

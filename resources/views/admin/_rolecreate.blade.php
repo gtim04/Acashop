@@ -9,7 +9,7 @@
 				@include('layouts.cardnavs')
 
 				<div class="card-body">
-					<div class="container col-md-7">
+					<div class="container">
 						<form  method="POST" action="{{route('admin.rolecreate')}}">
 							@csrf
 							@if(session()->has('success'))
@@ -28,7 +28,7 @@
 								@enderror
 							</div>
 							<div>
-								<label for="permission[]">Permissions</label>
+								<label for="permission[]">Please select the permission/s of this role:</label>
 							</div>
 							<div class="form-check form-check-inline">
 								@foreach($permissions as $permission)
@@ -62,9 +62,3 @@
 	</div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-	
-</script>
-@endpush

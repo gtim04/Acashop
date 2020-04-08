@@ -48,6 +48,9 @@
 									<small class="text-danger"><strong>{{$message}}</strong></small>
 								@enderror
 							</div>
+							<div>
+								<label for="role[]">Please select the role/s of this user:</label>
+							</div>
 							<div class="form-check form-check-inline">
 								@foreach($roles as $role)
 									<input 

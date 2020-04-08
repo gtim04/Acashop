@@ -30,8 +30,11 @@
 												  	<a href="/home-admin?category={{$category->category}}" class="badge badge-secondary">{{$category->category}}</a>
 												@endforeach
 											  </div>
+											  
 											  <div class="card-footer text-center">
+											  	@can('addedit product')
 											  	<button class="edit btn btn-dark" value="{{$product->id}}">Edit Product</button>
+											  	@endcan
 											  </div>
 										</div>
 									</div>
@@ -45,7 +48,9 @@
 					</div>
 					<div class="card-footer">
 						<div class="row justify-content-center">
+							@can('addedit product')
 							<a href="/admin-create" id="addProduct" class="btn btn-success">Add Product</a>
+							@endcan
 						</div>
 					</div>
 				</div>
@@ -90,8 +95,12 @@
 					</form>
       			</div>
       			<div class="modal-footer">
+      				@can('delete product')
       				<button type="button" class="delete btn btn-danger">Delete Product</button>
+      				@endcan
+      				@can('addedit product')
 	                <button type="button" class="save btn btn-primary">Save changes</button>
+	                @endcan
       			</div>
     		</div>
   		</div>

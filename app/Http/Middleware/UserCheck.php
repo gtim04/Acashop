@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Middleware;
-use Spatie\Permission\Models\Role;
 use Closure;
 
 class UserCheck
@@ -15,7 +14,7 @@ class UserCheck
      */
     public function handle($request, Closure $next)
     {
-        if(auth()->user()->hasRole('user')){
+        if(auth()->user()->hasPermissionTo('view main')){
             return $next($request);
         }
         abort(401);

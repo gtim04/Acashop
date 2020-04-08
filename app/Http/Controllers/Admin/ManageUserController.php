@@ -21,16 +21,12 @@ class ManageUserController extends Controller
         if (request()->ajax()) {
 
             $users = User::with('roles')
-                    ->whereHas('roles', function($roles){ $roles->whereNotIn('name', ['user']); })
-                    ->orDoesntHave('roles')
+                    ->whereHas('roles')
                     ->get();
 
             return DataTables::of($users)
                         ->addColumn('viewBtn', '<button type="button" class="view btn-primary">Manage User</button>')
                         ->rawColumns(['viewBtn'])
-                        ->editColumn('created_at', function ($orders) {
-                          return date('F, d Y, g:i a', strtotime($orders->created_at));
-                        })
                         ->make(true); //return modified datatables
         }
 

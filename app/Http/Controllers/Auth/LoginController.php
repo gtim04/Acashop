@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use Auth;
 
 class LoginController extends Controller
@@ -55,7 +54,7 @@ class LoginController extends Controller
         //route decisions
         if(Auth::attempt(array('email' => $input['email'], 'password' => $input['password'])))
         {
-            if ( auth()->user()->hasRole(Role::whereNotIn('name', ['user'])->pluck('name')->all()) ) {
+            if ( auth()->user()->hasPermissionTo('view admin')) {
                 return redirect()->route('admin.home');
             } else {
                 return redirect()->route('user.home');

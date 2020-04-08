@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\User;
 
 class PermissionRoleSeeder extends Seeder
 {
@@ -13,15 +14,21 @@ class PermissionRoleSeeder extends Seeder
      */
     public function run()
     {
-    	//setting array of permission
-        $permissions = ['add user', 'add role', 'manage user', 'manage role'];
-        
-        //creating supadmin role
-        $admin = Role::create(['name' => 'admin']);
+    	//setting array of default permission
+        $permissions = ['addedit product', 'delete product', 'add user', 'add role', 'manage user', 'manage role', 'view admin', 'view main'];
 
-        //setting array for the rest of default roles
-        $roles = ['moderator', 'user'];
-        
+        //setting array for default roles
+        $roles = ['admin', 'moderator', 'manager'];
+
+        //creating supadmin role
+        $supadmin = User::create([
+                    'name' => 'Owner',
+                    'email' => 'owner@email.com',
+                    'password' => Hash::make('Welcome1'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
         //iteration
         foreach ($roles as $role) {
         	Role::create(['name' => $role]);
@@ -30,7 +37,7 @@ class PermissionRoleSeeder extends Seeder
         //iterating over and setting supadmin permissions
         foreach ($permissions as $value) {
         	$permission = Permission::create(['name' => $value]);
-        	$admin->givePermissionTo($permission);
+        	$supadmin->givePermissionTo($permission);
         }
     }
 }

@@ -40,12 +40,12 @@ Route::group(['middleware' => ['auth', 'admin'], 'as' => 'admin.'], function (){
 	Route::get('/home-admin', 'Admin\AdminHomeController@index')->name('home');
 	//storing product
 	Route::get('/admin-create', 'Admin\AdminHomeController@create')->name('create');
-	Route::post('/admin-store', 'Admin\AdminHomeController@store')->name('store');
+	Route::post('/admin-store', 'Admin\AdminHomeController@store')->middleware('can:addedit product')->name('store');
 	//editing product
 	Route::get('/admin-sedit/{product}', 'Admin\AdminHomeController@edit')->name('edit');
-	Route::put('/admin-edit/{product}', 'Admin\AdminHomeController@update')->name('update');
+	Route::put('/admin-edit/{product}', 'Admin\AdminHomeController@update')->middleware('can:addedit product')->name('update');
 	//delete product
-	Route::delete('/admin-delete/{product}', 'Admin\AdminHomeController@destroy')->name('delete');
+	Route::delete('/admin-delete/{product}', 'Admin\AdminHomeController@destroy')->middleware('can:delete product')->name('delete');
 
 	Route::get('/create-userform', 'Admin\CreateUserController@create')->name('userform');
 	Route::post('/usercreate', 'Admin\CreateUserController@store')->name('usercreate');
@@ -57,5 +57,10 @@ Route::group(['middleware' => ['auth', 'admin'], 'as' => 'admin.'], function (){
 	Route::post('/showuser', 'Admin\ManageUserController@show')->name('showuser');
 	Route::put('/updateuser/{user}', 'Admin\ManageUserController@update')->name('updateuser');
 	Route::delete('/deleteuser/{user}', 'Admin\ManageUserController@destroy')->name('deleteuser');
+
+	Route::get('/manageroles', 'Admin\ManageRoleController@index')->name('manroles');
+	Route::get('/showrole/{role}', 'Admin\ManageRoleController@show')->name('showrole');
+	Route::put('/updaterole/{role}', 'Admin\ManageRoleController@update')->name('updaterole');
+	Route::delete('/deleterole/{role}', 'Admin\ManageRoleController@destroy')->name('deleterole');
 
 });
