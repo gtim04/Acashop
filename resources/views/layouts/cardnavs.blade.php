@@ -7,6 +7,9 @@
 
 
 <div class="card-header">
+	@if(request('category'))
+	<a href="{{route('admin.home')}}" class="badge-pill badge-secondary float-right">Clear Filter</a>
+	@endif
 	<ul class="nav nav-tabs card-header-tabs">
 		<li class="nav-item">
 			<a class="{{ Request::path() === 'home-admin' ? 'nav-link active' : 'nav-link'}}" href="{{ route('admin.home') }}">Products</a>
