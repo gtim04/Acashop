@@ -47,6 +47,9 @@
 						@endif
 					</div>
 					<div class="card-footer">
+						@can('view main')
+							<a href="/home-user" id="addProduct" class="btn btn-primary float-left">Visit Main</a>
+						@endcan
 						<div class="row justify-content-center">
 							@can('addedit product')
 							<a href="/admin-create" id="addProduct" class="btn btn-success">Add Product</a>

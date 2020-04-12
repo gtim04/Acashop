@@ -9,11 +9,11 @@ use Yajra\Datatables\Datatables;
 use Illuminate\Validation\Rule;
 use App\User;
 
-class ManageUserController extends Controller
+class ManageAdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can:manage user');
+        $this->middleware('can:manage admin');
     }
 
     public function index()
@@ -21,16 +21,16 @@ class ManageUserController extends Controller
         if (request()->ajax()) {
 
             $users = User::with('roles')
-                    ->whereHas('roles', function($roles){ $roles->whereIn('name', ['user']);})
+                    ->whereHas('roles', function($roles){ $roles->whereNotIn('name', ['user']);})
                     ->get();
 
             return DataTables::of($users)
-                        ->addColumn('viewBtn', '<button type="button" class="view btn-primary">Manage User</button>')
+                        ->addColumn('viewBtn', '<button type="button" class="view btn-primary">Manage Administrator</button>')
                         ->rawColumns(['viewBtn'])
                         ->make(true); //return modified datatables
         }
 
-        return view('admin._manageuser');
+        return view('admin._manageadmin');
     }
 
     public function show(Request $request)
@@ -40,22 +40,22 @@ class ManageUserController extends Controller
         return compact('user', 'roles');
     }
 
-    public function update(User $user, Request $request)
+    public function update(User $admin, Request $request)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)]
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($admin->id)]
         ]);
 
-        $user->update($validated);
-        $user->syncRoles($request->role);
+        $admin->update($validated);
+        $admin->syncRoles($request->role);
 
         return 'User has been updated!';
     }
 
-    public function destroy(User $user)
+    public function destroy(User $admin)
     {
-        $user->syncRoles([]);
-        $user->delete();
+        $admin->syncRoles([]);
+        $admin->delete();
     }
 }

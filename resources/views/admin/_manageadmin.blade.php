@@ -11,12 +11,13 @@
 				<div class="card-body">
 					
 					<hr>
-					<table class="table text-center" id="roleTable">
+					<table class="table text-center" id="userTable">
 						<thead>
 							<tr>
 								<th>ID</th>
 								<th>Name</th>
-								<th>Permission/s</th>
+								<th>Role/s</th>
+								<th>Email</th>
 								<th>Action</th>
 							</tr>
 						</thead>
@@ -36,8 +37,9 @@
 	</div>
 </div>
 
-<div class="modal fade" id="show_role" tabindex="-1" role="dialog">
-    <div class="modal-sm modal-dialog modal-dialog-centered" role="document">
+
+<div class="modal fade" id="show_user" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Enter changes</h5>
@@ -46,20 +48,24 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="editRoleForm">
+                <form id="editUserForm">
                     <div class="name form-group">
-						<label for="name">Role Name</label>
+						<label for="name">Name</label>
 						<input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}">
 					</div>
-					<div>
-						<label for="permissions">Permission/s</label>
+					<div class="email form-group">
+						<label for="email">Email</label>
+						<input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}">
 					</div>
-					<div class="permissions">
+					<div>
+						<label for="role[]">Role/s</label>
+					</div>
+					<div class="roles form-check form-check-inline">
 					</div>
                 </form>
             </div>
             <div class="modal-footer">
-            	<button class="delete btn btn-danger">Remove Role</button>
+            	<button class="delete btn btn-danger">Remove User</button>
                 <button class="save btn btn-success">Save Changes</button>
             </div>
         </div>
@@ -71,13 +77,13 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/b-1.6.1/b-print-1.6.1/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/b-1.6.1/b-print-1.6.1/datatables.min.js"></script>
 <script>
-	var id =''
+	var id = '';
 
-	table = $('#roleTable').DataTable({
+	var table = $('#userTable').DataTable({
         processing: true,
         serverSide: true,
         "ajax": {
-            "url": "{!! route('admin.manroles') !!}",
+            "url": "{!! route('admin.manadmin') !!}",
             "type": "GET"
         },
         columns: [{ 
@@ -85,46 +91,51 @@
         },{ 
             data: 'name', name: 'name' 
         },{ 
-            data: 'permissions[].name', name: 'permissions[].name' 
-        },{ 
+            data: 'roles[].name', name: 'roles[].name' 
+        }, { 
+            data: 'email', name: 'email' 
+        }, { 
             data: 'viewBtn', name: 'viewBtn' 
         }],
 
     });
 
-    $('#roleTable').on('click', '.view', function(){
+	$('#userTable').on('click', '.view', function(){
+
 		id = $(this).closest('tr').find('.sorting_1').html();
-		//preparing route
-		route = "{{route('admin.showrole', ":roleid")}}";
-        route = route.replace(':roleid', id);
 
-		$.get(route, function( data ) {
-			$('#name').val(data.role.name);
-
-			permissions = ''
-
-			$.each(data.permissions, function(key, value){
-	    		permissions += '<div class="form-check"><input class="permissions form-check-input" type="checkbox" name="permissions[]" value="'+key+'"><label class="form-check-label" for="inlineCheckbox1">'+value+'</label></div>'
+		$.post('{{route('admin.showadmin')}}', {id}, function(data){
+			console.log(data)
+			//getting roles
+			roles = '';
+			$.each(data.roles, function(key, value){
+	    		roles += '<div class="form-check form-check-inline"><input class="roles form-check-input" type="checkbox" name="role[]" value="'+key+'"><label class="form-check-label" for="inlineCheckbox1">'+value+'</label></div>'
 	        });
-
-			$('.permissions').html(permissions);
-
-			$.each(data.role.permissions, function(index){
-        		$('.permissions input[value='+data.role.permissions[index].id+']').prop("checked", true);
+			//attaching roles
+			$('.roles').html(roles);
+			//checking roles specific
+			$.each(data.user.roles, function(index){
+        		$('.roles input[value='+data.user.roles[index].id+']').prop("checked", true);
         	});
-
-			$('#show_role').modal('show');
-
+			//appending add data
+        	$('#name').val(data.user.name);
+        	$('#email').val(data.user.email);
+        	//showing modal
+			$('#show_user').modal({
+	            show: true,
+	            backdrop: 'static',
+	            keyboard: false
+	        });
 		});
 	});
 
 	$('.save').on('click', function(){
 		//preparing route
-		route = "{{route('admin.updaterole', ":roleid")}}";
-        route = route.replace(':roleid', id);
+		route = "{{route('admin.updateadmin', ":userid")}}";
+        route = route.replace(':userid', id);
         //getting form
-        formData = new FormData($('#editRoleForm')[0]);
-        //updating role
+        formData = new FormData($('#editUserForm')[0]);
+        //updating user
 		$.ajax({
 	        url: route,
 	        type: 'POST',
@@ -133,12 +144,10 @@
 	        contentType: false,
 	        processData: false,
 	        success: function (data) {
-	        	console.log(data)
 	        	table.ajax.reload( null, false);
-	        	$('#editRoleForm').findOrAppend('.alert', '<div class="mt-2 alert alert-success alert-dismissible fade show" role="alert"><strong>'+data+'</strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>')
+	        	$('#editUserForm').findOrAppend('.alert', '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>'+data+'</strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>')
 	        },
 	        error: function (err) {
-	        	console.log(err)
 	        	$.each(err.responseJSON.errors, function(key, value){
 					$('.'+key).findOrAppend('.errors', '<small class="errors alert-danger">'+value+'</small>');
 					$('#'+key).addClass('border border-danger');
@@ -147,14 +156,14 @@
 	    });
 	});
 
-	$('#show_role').on('hide.bs.modal', function(){
+	$('#show_user').on('hide.bs.modal', function(){
 		$('.alert').remove();
 		$('.errors').remove();
 		$('input').removeClass('border border-danger');
 	});
 
 	$('.delete').on('click', function(){
-		$('#show_role').modal('hide');
+		$('#show_user').modal('hide');
 		$('#failmodal').modal({
 			show: true,
 			backdrop: 'static',
@@ -165,8 +174,8 @@
 	//confirm delete
 	$('.confirm-delete').on('click', function(e){
 		//preparing route
-		route = "{{route('admin.deleterole', ":roleid")}}";
-        route = route.replace(':roleid', id);
+		route = "{{route('admin.deleteadmin', ":userid")}}";
+        route = route.replace(':userid', id);
 
 		$.ajax({
 	        url: route,
@@ -188,7 +197,7 @@
 	//cancel delete
 	$('.cancel-delete').on('click', function(e){
 		e.preventDefault();
-		$('#show_role').modal('toggle')
+		$('#show_user').modal('toggle')
 		$('#failmodal').modal('hide')
 	});
 

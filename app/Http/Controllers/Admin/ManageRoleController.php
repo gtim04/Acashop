@@ -19,7 +19,7 @@ class ManageRoleController extends Controller
 
     	if (request()->ajax()) {
 
-            $roles = Role::whereNotIn('name', ['user'])->with('permissions')->get();
+            $roles = Role::with('permissions')->get();
 
             return DataTables::of($roles)
                         ->addColumn('viewBtn', '<button type="button" class="view btn-primary">Manage Role</button>')

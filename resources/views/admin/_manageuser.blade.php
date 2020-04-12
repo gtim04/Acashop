@@ -83,7 +83,7 @@
         processing: true,
         serverSide: true,
         "ajax": {
-            "url": "{!! route('admin.manusers') !!}",
+            "url": "{!! route('admin.manuser') !!}",
             "type": "GET"
         },
         columns: [{ 

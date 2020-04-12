@@ -26,9 +26,15 @@
 			</li>
 		@endcan
 
+		@can('manage admin')
+		<li class="nav-item">
+			<a class="{{ Request::path() === 'manageadmin' ? 'nav-link active' : 'nav-link'}}" href="{{ route('admin.manadmin') }}">Manage Administrators</a>
+		</li>
+		@endcan
+
 		@can('manage user')
 		<li class="nav-item">
-			<a class="{{ Request::path() === 'manageusers' ? 'nav-link active' : 'nav-link'}}" href="{{ route('admin.manusers') }}">Manage Users</a>
+			<a class="{{ Request::path() === 'manageuser' ? 'nav-link active' : 'nav-link'}}" href="{{ route('admin.manuser') }}">Manage Users</a>
 		</li>
 		@endcan
 

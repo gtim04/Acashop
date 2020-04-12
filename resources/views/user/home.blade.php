@@ -53,8 +53,15 @@
 						@endif
 					</div>
 					<div class="card-footer bg-dark text-light">
-						<a href="{{route('user.orders')}}" class="btn btn-primary">Go to your orders!</a>
+						<a href="{{route('user.orders')}}" class="btn btn-primary float-left">Go to your orders!</a>
 						<button class="viewCart btn btn-primary float-right"><span class="badge badge-light">{{$orderCount}}</span> View cart</button>
+						@can('view admin')
+							<div class="row justify-content-center">
+								@can('addedit product')
+								<a href="/home-admin" id="addProduct" class="btn btn-primary">Go back to admin</a>
+								@endcan
+							</div>
+						@endcan
 					</div>
 				</div>
 			</div>
@@ -96,7 +103,11 @@
 					</form>
       			</div>
       			<div class="modal-footer">
-	                <button type="button" class="add btn btn-primary">Add to cart</button>
+      				@can('order product')
+	                	<button type="button" class="add btn btn-primary">Add to cart</button>
+	                @else
+	                	<small class="text-danger">Oppps sorry you cannot order right now. Please contact the site administrator</small>
+	                @endcan
       			</div>
     		</div>
   		</div>
@@ -150,7 +161,11 @@
   				</table>
   			</div>
   			<div class="modal-footer">
-                <button type="button" class="btn btn-success" id="checkout">Check out!</button>
+  				@can('order product')
+	                <button type="button" class="btn btn-success" id="checkout">Check out!</button>
+                @else
+	            	<small class="text-danger">Oppps sorry you cannot order right now. Please contact the site administrator</small>
+	            @endcan
   			</div>
 		</div>
 	</div>

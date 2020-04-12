@@ -51,20 +51,22 @@
 							<div>
 								<label for="role[]">Please select the role/s of this user:</label>
 							</div>
+							
+							@foreach($roles as $role)
 							<div class="form-check form-check-inline">
-								@foreach($roles as $role)
-									<input 
-									class="p-2 category form-check-input" 
-									type="checkbox"
-									name="role[]" 
-									value="{{$role}}">
-									<label 
-									class="mr-3 form-check-label" 
-									for="inlineCheckbox1">
-										{{ucwords($role)}}
-									</label>
-								@endforeach
+								<input 
+								class="p-2 category form-check-input" 
+								type="checkbox"
+								name="role[]" 
+								value="{{$role}}">
+								<label 
+								class="mr-3 form-check-label" 
+								for="inlineCheckbox1">
+									{{ucwords($role)}}
+								</label>
 							</div>
+							@endforeach
+							
 							<div class="form-group">
 								@error('role')
 									<small class="text-danger"><strong>{{$message}}</strong></small>
